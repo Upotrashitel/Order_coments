@@ -1,15 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateComment, OrderComment } from './order-comment.types';
 import { HttpService } from '@nestjs/axios';
-import { after } from 'node:test';
 
 @Injectable()
 export class OrderCommentService {
   constructor(private readonly httpService: HttpService) {}
   private comments: OrderComment[] = [];
 
-  public async getComments(): Promise<OrderComment[]> {
-    return this.comments;
+  public async getComments(
+    orderId: string | undefined,
+  ): Promise<OrderComment[]> {
+    return this.comments.filter((item) =>
+      orderId ? item.orderId === orderId : true,
+    );
   }
 
   public getById(id: string): OrderComment {

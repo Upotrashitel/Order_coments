@@ -36,8 +36,8 @@ export class OrderCommentController {
     description: 'Успешное получение комментариев',
     example: [DEFAULT_COMMENT_MOCK],
   })
-  getComments() {
-    return this.orderCommentService.getComments();
+  getComments(@Query('orderId') orderId: string) {
+    return this.orderCommentService.getComments(orderId);
   }
 
   @Get(':comment_id')
