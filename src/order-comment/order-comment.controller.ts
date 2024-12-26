@@ -2,12 +2,16 @@ import {
   Body,
   Controller,
   Get,
+  Head,
+  Headers,
+  HostParam,
   HttpException,
   HttpStatus,
   Param,
   Post,
   Put,
   Query,
+  Req,
 } from '@nestjs/common';
 import { OrderCommentService } from './order-comment.service';
 import { ApiParam, ApiResponse } from '@nestjs/swagger';
@@ -57,8 +61,16 @@ export class OrderCommentController {
     description: 'Успешное создание комментария',
     example: DEFAULT_COMMENT_MOCK,
   })
-  createNewComment(@Body() comment: CreateComment) {
-    return this.orderCommentService.createComment(comment);
+  createNewComment(
+    @Body() comment: CreateComment,
+    @Headers('host') host,
+    @Req() req,
+  ) {
+    const { protocol } = req;
+    return this.orderCommentService.createComment(
+      comment,
+      `${protocol}://${host}`,
+    );
   }
 
   @Put(':comment_id')
@@ -67,8 +79,17 @@ export class OrderCommentController {
     description: 'Успешное обновление комментария',
     example: DEFAULT_COMMENT_MOCK,
   })
-  @ApiParam({ type: 'string', name: 'comment_id' })
-  editComment(@Param('comment_id') id: string, @Body() comment: CreateComment) {
-    return this.orderCommentService.editComment(id, comment);
+  editComment(
+    @Param('comment_id') id: string,
+    @Body() comment: CreateComment,
+    @Headers('host') host,
+    @Req() req,
+  ) {
+    const { protocol } = req;
+    return this.orderCommentService.editComment(
+      id,
+      comment,
+      `${protocol}://${host}`,
+    );
   }
 }
