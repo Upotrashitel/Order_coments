@@ -26,7 +26,6 @@ export class CommentTexts {
   neutralText: string;
 }
 
-@ApiSchema({ description: 'Комментарий' })
 export class OrderComment extends CommentTexts {
   constructor(props) {
     const { rate, orderId, ...texts } = props;
