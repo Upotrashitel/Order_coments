@@ -2,9 +2,7 @@ import {
   Body,
   Controller,
   Get,
-  Head,
   Headers,
-  HostParam,
   HttpException,
   HttpStatus,
   Param,
@@ -14,7 +12,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { OrderCommentService } from './order-comment.service';
-import { ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiResponse } from '@nestjs/swagger';
 import { CreateComment, OrderComment } from './order-comment.types';
 
 const DEFAULT_COMMENT_MOCK = new OrderComment({
@@ -36,8 +34,12 @@ export class OrderCommentController {
     description: 'Успешное получение комментариев',
     example: [DEFAULT_COMMENT_MOCK],
   })
-  getComments(@Query('orderId') orderId: string) {
-    return this.orderCommentService.getComments(orderId);
+  getComments(
+    @Query('orderId') orderId: string,
+    @Query('orderType')
+    orderType: 'product' | 'place' | 'service' | undefined,
+  ) {
+    return this.orderCommentService.getComments(orderId, orderType);
   }
 
   @Get(':comment_id')

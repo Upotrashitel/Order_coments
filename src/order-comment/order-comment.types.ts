@@ -1,23 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 const defaultCommnetsText = {
-  possitiveText: '',
+  positiveText: '',
   negativeText: '',
   neutralText: '',
 };
 
 export class CommentTexts {
   constructor(props = defaultCommnetsText) {
-    const { possitiveText, negativeText, neutralText } = {
+    const { positiveText, negativeText, neutralText } = {
       ...defaultCommnetsText,
       ...props,
     };
-    this.possitiveText = possitiveText;
+    this.positiveText = positiveText;
     this.neutralText = neutralText;
     this.negativeText = negativeText;
   }
   @ApiProperty({ description: 'Положительный комментарий', required: false })
-  possitiveText: string;
+  positiveText: string;
 
   @ApiProperty({ description: 'Отрицательный комментарий', required: false })
   negativeText: string;
@@ -28,12 +28,12 @@ export class CommentTexts {
 
 export class OrderComment extends CommentTexts {
   constructor(props) {
-    const { rate, orderId, ...texts } = props;
+    const { rate, entryId, ...texts } = props;
     super(texts);
 
     this.id = 'commnet_id-' + Date.now().toString();
     this.rate = rate;
-    this.orderId = orderId;
+    this.entryId = entryId;
     this.relatedCommnetId = props.relatedCommnetId || null;
   }
   @ApiProperty({ description: 'ID коментария' })
@@ -43,7 +43,7 @@ export class OrderComment extends CommentTexts {
   rate: number;
 
   @ApiProperty({ description: 'Заказ, к которому написан комментарий' })
-  orderId: string;
+  entryId: string;
 
   @ApiProperty({
     description: 'ID комментария на который ссылается текущий комментарий',
@@ -60,6 +60,8 @@ export class OrderComment extends CommentTexts {
     description: 'Дата обновления',
   })
   updatedAt: string;
+
+  type?: string;
 }
 
 export class CreateComment extends CommentTexts {
@@ -67,7 +69,7 @@ export class CreateComment extends CommentTexts {
   rate: number;
 
   @ApiProperty({ description: 'Заказ, к которому написан комментарий' })
-  orderId: string;
+  entryId: string;
 
   @ApiProperty({
     description: 'ID комментария на который ссылается текущий комментарий',

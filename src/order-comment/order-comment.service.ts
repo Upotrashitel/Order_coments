@@ -1,18 +1,43 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateComment, OrderComment } from './order-comment.types';
 import { HttpService } from '@nestjs/axios';
+import { faker } from '@faker-js/faker';
+import { mockComments } from 'src/mock/comments';
 
 @Injectable()
 export class OrderCommentService {
   constructor(private readonly httpService: HttpService) {}
-  private comments: OrderComment[] = [];
+
+  private comments: OrderComment[] = faker.helpers.multiple(
+    this.createMockComment,
+    { count: 300 },
+  );
+
+  public createMockComment(): OrderComment {
+    return {
+      id: faker.git.commitSha(),
+      rate: faker.number.int({ min: 0, max: 5 }),
+      entryId: '',
+      relatedCommnetId: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      ...faker.helpers.arrayElement(mockComments),
+    };
+  }
 
   public async getComments(
-    orderId: string | undefined,
+    entryId: string | undefined,
+    orderType: 'product' | 'place' | 'service' | undefined,
   ): Promise<OrderComment[]> {
-    return this.comments.filter((item) =>
-      orderId ? item.orderId === orderId : true,
+    const filteredById = this.comments.filter((item) =>
+      entryId ? item.entryId === entryId : true,
     );
+
+    if (orderType) {
+      return filteredById.filter((item) => item.type === orderType);
+    }
+
+    return filteredById;
   }
 
   public getById(id: string): OrderComment {
